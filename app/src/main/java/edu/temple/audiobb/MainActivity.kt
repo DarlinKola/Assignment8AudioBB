@@ -1,89 +1,86 @@
-package edu.temple.audiobb
+package com.uni.audiobb
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import android.widget.Button
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
+import java.lang.ref.WeakReference
 
-class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface {
-
-    val isSingleContainer : Boolean by lazy{
+class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface{
+    private val viewModel: BookViewModel by viewModels()
+    private val isOnePane: Boolean by lazy {
         findViewById<View>(R.id.container2) == null
     }
+    private lateinit var mainSearchButton: Button
+    private val intentLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
-    val selectedBookViewModel : SelectedBookViewModel by lazy {
-        ViewModelProvider(this).get(SelectedBookViewModel::class.java)
-    }
+            if (result.resultCode == Activity.RESULT_OK) {
+                supportFragmentManager.commit {
+                    replace(R.id.container1, BookListFragment())
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Grab test data
-        val bookList = getBookList()
+        mainSearchButton = findViewById(R.id.mainSearchButton)
 
-        // If we're switching from one container to two containers
-        // clear BookDetailsFragment from container1
+        mainSearchButton.setOnClickListener {
+            intentLauncher.launch(Intent(this, BookSearchActivity::class.java))
+        }
+
+        //clear book details fragment in container 1 if switching to two pane
         if (supportFragmentManager.findFragmentById(R.id.container1) is BookDetailsFragment) {
             supportFragmentManager.popBackStack()
         }
 
-        // If this is the first time the activity is loading, go ahead and add a BookListFragment
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .add(R.id.container1, BookListFragment.newInstance(bookList))
-                .commit()
-        } else
-            // If activity loaded previously, there's already a BookListFragment
-            // If we have a single container and a selected book, place it on top
-            if (isSingleContainer && selectedBookViewModel.getSelectedBook().value != null) {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container1, BookDetailsFragment())
-                    .setReorderingAllowed(true)
-                    .addToBackStack(null)
-                    .commit()
+        //if twoPane but no book details fragment, add it to container 2
+        if (!isOnePane && supportFragmentManager.findFragmentById(R.id.container2) !is BookDetailsFragment) {
+            supportFragmentManager.commit {
+                add(R.id.container2, BookDetailsFragment())
+            }
         }
-
-        // If we have two containers but no BookDetailsFragment, add one to container2
-        if (!isSingleContainer && supportFragmentManager.findFragmentById(R.id.container2) !is BookDetailsFragment)
-            supportFragmentManager.beginTransaction()
-                .add(R.id.container2, BookDetailsFragment())
-                .commit()
-
-    }
-
-    private fun getBookList() : BookList {
-        val bookList = BookList()
-        bookList.add(Book("Book 0", "Author 9"))
-        bookList.add(Book("Book 1", "Author 8"))
-        bookList.add(Book("Book 2", "Author 7"))
-        bookList.add(Book("Book 3", "Author 6"))
-        bookList.add(Book("Book 4", "Author 5"))
-        bookList.add(Book("Book 5", "Author 4"))
-        bookList.add(Book("Book 6", "Author 3"))
-        bookList.add(Book("Book 7", "Author 3"))
-        bookList.add(Book("Book 8", "Author 2"))
-        bookList.add(Book("Book 9", "Author 0"))
-
-        return bookList
+        //if activity is loading for first time, add the book list fragment
+        if (savedInstanceState == null) {
+            supportFragmentManager.commit {
+                add(R.id.container1, BookListFragment())
+            }
+        } else if (isOnePane && viewModel.getSelectedBook().value != null) {
+            //if activity has loaded a booklist fragment already, place single container on top
+            supportFragmentManager.commit {
+                replace(R.id.container1, BookDetailsFragment())
+                setReorderingAllowed(true)
+                addToBackStack(null)
+            }
+        }
     }
 
     override fun onBackPressed() {
-        // Backpress clears the selected book
-        selectedBookViewModel.setSelectedBook(null)
+        viewModel.setSelectedBook(null)
         super.onBackPressed()
     }
 
     override fun bookSelected() {
-        // Perform a fragment replacement if we only have a single container
-        // when a book is selected
-
-        if (isSingleContainer) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container1, BookDetailsFragment())
-                .setReorderingAllowed(true)
-                .addToBackStack(null)
-                .commit()
+        if (isOnePane) {
+            supportFragmentManager.commit {
+                replace(R.id.container1, BookDetailsFragment())
+                setReorderingAllowed(true)
+                addToBackStack(null)
+            }
         }
     }
 }

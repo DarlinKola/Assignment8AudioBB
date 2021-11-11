@@ -1,41 +1,47 @@
-package edu.temple.audiobb
+package com.uni.audiobb
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.squareup.picasso.Picasso
 
 class BookDetailsFragment : Fragment() {
 
-    lateinit var titleTextView: TextView
-    lateinit var authorTextView: TextView
+    private lateinit var bookTitle: TextView
+    private lateinit var bookAuthor: TextView
+    private lateinit var bookCover: ImageView
+    private val viewModel: BookViewModel by activityViewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val layout = inflater.inflate(R.layout.fragment_book_details, container, false)
+    ): View {
+        val view = inflater.inflate(R.layout.fragment_book_details, container, false)
 
-        titleTextView = layout.findViewById(R.id.titleTextView)
-        authorTextView = layout.findViewById(R.id.authorTextView)
+        bookTitle = view.findViewById(R.id.titleTextView2)
+        bookAuthor = view.findViewById(R.id.authorTextView2)
+        bookCover = view.findViewById(R.id.bookCoverImageView)
 
-        return layout
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ViewModelProvider(requireActivity()).get(SelectedBookViewModel::class.java)
-            .getSelectedBook().observe(requireActivity(), {updateBook(it)})
+        viewModel.getSelectedBook().observe(requireActivity(), {updateBook(it)})
     }
 
-    private fun updateBook(book: Book?) {
+    private fun updateBook(book:BookModel?){
         book?.run {
-            titleTextView.text = title
-            authorTextView.text = author
+            bookTitle.text = title
+            bookAuthor.text = author
+            Picasso.get().load(cover_url).into(bookCover)
         }
     }
 }

@@ -1,22 +1,34 @@
-package edu.temple.audiobb
-
+package com.uni.audiobb
+import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
-class BookList : Serializable{
-    private val bookList : MutableList<Book> by lazy {
+object BookList : Serializable{
+    private val bookList : MutableList<BookModel> by lazy {
         ArrayList()
     }
 
-    fun add(book: Book) {
+    fun add(book: BookModel) {
         bookList.add(book)
     }
 
-    fun remove(book: Book){
+    fun addLibrary(library: List<BookModel>){
+        for(book in library){
+            add(book)
+        }
+    }
+
+    fun remove(book: BookModel){
         bookList.remove(book)
+    }
+
+    fun clear(){
+        bookList.clear()
     }
 
     operator fun get(index: Int) = bookList[index]
 
     fun size() = bookList.size
+
+
 
 }
