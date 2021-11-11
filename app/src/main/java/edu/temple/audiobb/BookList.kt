@@ -5,21 +5,21 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 object BookList : Serializable{
-    private val bookList : MutableList<BookModel> by lazy {
+    private val bookList : MutableList<Book> by lazy {
         ArrayList()
     }
 
-    fun add(book: BookModel) {
+    fun add(book: Book) {
         bookList.add(book)
     }
 
-    fun addLibrary(library: List<BookModel>){
+    fun addLibrary(library: List<Book>){
         for(book in library){
             add(book)
         }
     }
 
-    fun remove(book: BookModel){
+    fun remove(book: Book){
         bookList.remove(book)
     }
 

@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         mainSearchButton = findViewById(R.id.mainSearchButton)
 
         mainSearchButton.setOnClickListener {
-            intentLauncher.launch(Intent(this, BookSearchActivity::class.java))
+            intentLauncher.launch(Intent(this, BookSearch::class.java))
         }
 
         //clear book details fragment in container 1 if switching to two pane

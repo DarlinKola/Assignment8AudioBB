@@ -16,7 +16,7 @@ class BookDetailsFragment : Fragment() {
     private lateinit var bookTitle: TextView
     private lateinit var bookAuthor: TextView
     private lateinit var bookCover: ImageView
-    private val viewModel: BookViewModel by activityViewModels()
+    private val viewModel: BookView by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

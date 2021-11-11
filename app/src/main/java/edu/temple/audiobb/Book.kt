@@ -1,6 +1,12 @@
-package edu.temple.audiobb
+package com.uni.audiobb
 
+import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
-// Simple data class
-data class Book(val title: String, val author: String) : Serializable
+@JsonClass(generateAdapter = true)
+data class Book(
+    var id: Int,
+    var title:String,
+    var author:String,
+    var cover_url: String
+) : Serializable

@@ -7,15 +7,15 @@ import androidx.recyclerview.widget.RecyclerView
 
 class BookViewModel : ViewModel(){
 
-    private val book: MutableLiveData<BookModel> by lazy {
+    private val book: MutableLiveData<Book> by lazy {
         MutableLiveData()
     }
 
-    fun getSelectedBook(): LiveData<BookModel> {
+    fun getSelectedBook(): LiveData<Book> {
         return book
     }
 
-    fun setSelectedBook(selectedBook: BookModel?) {
+    fun setSelectedBook(selectedBook: Book?) {
         this.book.value = selectedBook
     }
 }

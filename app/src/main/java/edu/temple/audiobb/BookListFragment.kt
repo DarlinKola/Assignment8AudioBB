@@ -31,9 +31,9 @@ class BookListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val onClick : (BookModel) -> Unit = {
+        val onClick : (Book) -> Unit = {
             //Updating view model on book selection
-                book: BookModel -> viewModel.setSelectedBook(book)
+                book: Book -> viewModel.setSelectedBook(book)
             //Informing activity to prevent replay of event when it restarts
             (activity as BookSelectedInterface).bookSelected()
         }
