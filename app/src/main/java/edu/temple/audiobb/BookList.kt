@@ -1,4 +1,6 @@
-package com.uni.audiobb
+package edu.temple.audiobb
+
+
 import com.squareup.moshi.JsonClass
 import java.io.Serializable
 

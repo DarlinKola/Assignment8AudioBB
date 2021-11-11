@@ -1,21 +1,15 @@
-package com.uni.audiobb
+package edu.temple.audiobb
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
-import java.lang.ref.WeakReference
+import edu.temple.audiobb.BookSearchActivity
 
 class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface{
     private val viewModel: BookViewModel by viewModels()
